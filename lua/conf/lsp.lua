@@ -1,5 +1,5 @@
 local servers = {
-	clangd = {},
+--	clangd = {},
 	gopls = {},
 	pyright = {},
 	rust_analyzer = {},
@@ -65,13 +65,13 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 mason_lspconfig.setup {
 	ensure_installed = vim.tbl_keys(servers),
 }
-mason_lspconfig.setup_handlers {
+mason_lspconfig.setup {
 	function(server_name)
 		require("lspconfig")[server_name].setup {
 			capabilities = capabilities,
 			on_attach = on_attach,
 			settings = servers[server_name],
---			filetypes = (servers[server_name]).filetypes,
+			filetypes = (servers[server_name]).filetypes,
 		}
 	end,
 }
