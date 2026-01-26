@@ -1,5 +1,5 @@
 vim.defer_fn(function()
-	require("nvim-treesitter.configs").setup {
+	require("nvim-treesitter.config").setup {
 		ensure_installed = { 'bash', 'vim', 'lua', 'html', 'css', 'javascript', 'python', 'go', 'rust', 'c', 'cpp' },
 		auto_install = false,
 		sync_install = false,

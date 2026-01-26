@@ -154,9 +154,7 @@ require('lazy').setup({
   },
   {
     'nvim-treesitter/nvim-treesitter',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
-    },
+    lazy = false,
     build = ':TSUpdate',
   },
   {
@@ -166,8 +164,7 @@ require('lazy').setup({
     },
     event = 'VeryLazy',
     config = function()
-      require("orgmode").setup_ts_grammar()
-      require("nvim-treesitter.configs").setup({
+      require("nvim-treesitter.config").setup({
         highlight = { enable = true },
         ensure_installed = { 'org' },
       })
