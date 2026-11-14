@@ -15,11 +15,10 @@ local servers = {
 		},
 	},
 }
-local wk = require("which-key")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-local mason_lspconfig = require "mason-lspconfig"
+local wk = require("which-key")
 
 local on_attach = function(_, bufnr)
 	local nmap = function(keys, func, desc)
@@ -49,7 +48,7 @@ local on_attach = function(_, bufnr)
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end, '[W]orkspace [L]ist Folders')
 	
-	vim.api.nvim_buf_create_user_command('bufnr', "Format", function()
+	vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
 		vim.lsp.buf.format()
 	end, { desc = 'Format current Buffer with LSP' })
 end
@@ -65,23 +64,21 @@ wk.add({
 })
 
 wk.add({
-	['<leader>'] = { name = 'VISUAL <leader>' },
-	['<leader>h'] = { 'Git [H]unk' },
-}, { mode = 'v' })
+	{ "<leader>h", group = "Git [H]unk", mode = "v" }
+})
 
 require("mason").setup()
 require("neodev").setup()
 
-mason_lspconfig.setup ({
+vim.lsp.config("*", {
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
+for server_name, server_opts in pairs(servers) do
+	vim.lsp.config(server_name, server_opts)
+end
+
+require("mason-lspconfig").setup({
 	ensure_installed = vim.tbl_keys(servers),
-	handlers = {
-		function (server_name)
-			require("lspconfig")[server_name].setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-				settings = servers[server_name].settings or {},
-				filetypes = servers[server_name].filetypes,
-			})
-		end,
-	},
 })
