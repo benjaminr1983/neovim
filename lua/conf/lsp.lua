@@ -6,13 +6,16 @@ local servers = {
 	ts_ls = {},
 	html = { filetypes = { 'html', 'twig', 'hbs' } },
 	lua_ls = {
-		Lua = {
-			workspace = { checkThirdParty = false },
-			telemetry = { enable = false },
-			diagnostics = { disable = { 'missing-fields' } },
+		settings = {
+			Lua = {
+				workspace = { checkThirdParty = false },
+				telemetry = { enable = false },
+				diagnostics = { disable = { 'missing-fields' } },
+			},
 		},
 	},
 }
+local wk = require("which-key")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
@@ -46,22 +49,22 @@ local on_attach = function(_, bufnr)
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end, '[W]orkspace [L]ist Folders')
 	
-	vim.api.nvim_buf_create_user_command('bufnr', 'Format', function()
+	vim.api.nvim_buf_create_user_command('bufnr', "Format", function()
 		vim.lsp.buf.format()
 	end, { desc = 'Format current Buffer with LSP' })
 end
-require("which-key").register {
-	{ "", group = "[R]ename" },
-	{ "", group = "[W]orkspace" },
-	{ "", group = "[S]earch" },
-	{ "", group = "[T]oggle" },
-	{ "", group = "Git [H]unk" },
-	{ "", group = "[C]ode" },
-	{ "", group = "[G]it" },
-	{ "", group = "[D]ocument" },
-	{ "", desc = "", hidden = true, mode = { "n", "n", "n", "n", "n", "n", "n", "n" } },
-}
-require("which-key").register({
+wk.add({
+	{ "<leader>r", group = "[R]ename" },
+	{ "<leader>w", group = "[W]orkspace" },
+	{ "<leader>s", group = "[S]earch" },
+	{ "<leader>t", group = "[T]oggle" },
+	{ "<leader>h", group = "Git [H]unk" },
+	{ "<leader>c", group = "[C]ode" },
+	{ "<leader>g", group = "[G]it" },
+	{ "<leader>d", group = "[D]ocument" },
+})
+
+wk.add({
 	['<leader>'] = { name = 'VISUAL <leader>' },
 	['<leader>h'] = { 'Git [H]unk' },
 }, { mode = 'v' })

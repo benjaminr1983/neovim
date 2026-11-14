@@ -24,7 +24,6 @@ vim.keymap.set({ 'n', 'v' }, '<S-l>', ':bnext<CR>', { noremap = true, silent = t
 vim.keymap.set({ 'n', 'v' }, '<S-h>', ':bprevious<CR>', { noremap = true, silent = true })			--movement
 --normal mode
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })				--nowrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })				--nowrap
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })		--diagnostics
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })			--diagnostics
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })	--diagnostics
