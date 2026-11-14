@@ -163,15 +163,15 @@ require('lazy').setup({
       { 'nvim-treesitter/nvim-treesitter' },
     },
     event = 'VeryLazy',
-    config = function()
-      require("nvim-treesitter.config").setup({
-        highlight = { enable = true },
-        ensure_installed = { 'org' },
-      })
-      require("orgmode").setup({
-        org_agenda_files = '~/orgfiles/**/*',
-        org_default_notes_file = '~/orgfiles/refile.org',
-      })
-    end,
+--    config = function()
+--      require("nvim-treesitter.config").setup({
+--        highlight = { enable = true },
+--        ensure_installed = { 'org' },
+--      })
+--      require("orgmode").setup({
+--        org_agenda_files = '~/orgfiles/**/*',
+--        org_default_notes_file = '~/orgfiles/refile.org',
+--      })
+--    end,
   },
 }, {})

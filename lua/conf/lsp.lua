@@ -1,9 +1,9 @@
 local servers = {
-	clangd = {},
 	gopls = {},
+	bashls = {},
 	pyright = {},
 	rust_analyzer = {},
---	tsserver = {},
+	ts_ls = {},
 	html = { filetypes = { 'html', 'twig', 'hbs' } },
 	lua_ls = {
 		Lua = {
@@ -14,7 +14,10 @@ local servers = {
 	},
 }
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
 local mason_lspconfig = require "mason-lspconfig"
+
 local on_attach = function(_, bufnr)
 	local nmap = function(keys, func, desc)
 		if desc then
@@ -24,7 +27,9 @@ local on_attach = function(_, bufnr)
 	end
 	nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
 	nmap('<leader>ca', function()
-		vim.lsp.buf.code_action { context = { only = { 'quickfix', 'refactor', 'source' } } }
+		vim.lsp.buf.code_action({ 
+			context = { only = { 'quickfix', 'refactor', 'source' } }, 
+		})
 	end, '[C]ode [A]ction')
 	nmap('gd', require("telescope.builtin").lsp_definitions, '[G]oto [D]efinition')
 	nmap('gr', require("telescope.builtin").lsp_references, '[G]oto [R]eferences')
@@ -40,46 +45,40 @@ local on_attach = function(_, bufnr)
 	nmap('<leader>wl', function()
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end, '[W]orkspace [L]ist Folders')
-	vim.api.nvim_buf_create_user_command('bufnr', 'Format', function(_)
+	
+	vim.api.nvim_buf_create_user_command('bufnr', 'Format', function()
 		vim.lsp.buf.format()
 	end, { desc = 'Format current Buffer with LSP' })
 end
 require("which-key").register {
-	{ '<leader>c', group = '[C]ode' },
-	{ '<leader>c_', hidden = true },
-	{ '<leader>d', group = '[D]ocument' },
-	{ '<leader>d_', hidden = true },
-	{ '<leader>g', group = '[G]it' },
-	{ '<leader>g_', hidden = true },
-	{ '<leader>h', group = 'Git [H]unk' },
-	{ '<leader>h_', hidden = true },
-	{ '<leader>r', group = '[R]ename' },
-	{ '<leader>r_', hidden = true },
-	{ '<leader>s', group = '[S]earch' },
-	{ '<leader>s_', hidden = true },
-	{ '<leader>t', group = '[T]oggle' },
-	{ '<leader>t_', hidden = true },
-	{ '<leader>w', group = '[W]orkspace' },
-	{ '<leader>w_', hidden = true },
+	{ "", group = "[R]ename" },
+	{ "", group = "[W]orkspace" },
+	{ "", group = "[S]earch" },
+	{ "", group = "[T]oggle" },
+	{ "", group = "Git [H]unk" },
+	{ "", group = "[C]ode" },
+	{ "", group = "[G]it" },
+	{ "", group = "[D]ocument" },
+	{ "", desc = "", hidden = true, mode = { "n", "n", "n", "n", "n", "n", "n", "n" } },
 }
 require("which-key").register({
 	['<leader>'] = { name = 'VISUAL <leader>' },
 	['<leader>h'] = { 'Git [H]unk' },
 }, { mode = 'v' })
+
 require("mason").setup()
-require("mason-lspconfig").setup()
 require("neodev").setup()
-capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-mason_lspconfig.setup {
+
+mason_lspconfig.setup ({
 	ensure_installed = vim.tbl_keys(servers),
-}
-mason_lspconfig.setup {
-	function(server_name)
-		require("lspconfig")[server_name].setup {
-			capabilities = capabilities,
-			on_attach = on_attach,
-			settings = servers[server_name],
-			filetypes = (servers[server_name]).filetypes,
-		}
-	end,
-}
+	handlers = {
+		function (server_name)
+			require("lspconfig")[server_name].setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+				settings = servers[server_name].settings or {},
+				filetypes = servers[server_name].filetypes,
+			})
+		end,
+	},
+})
