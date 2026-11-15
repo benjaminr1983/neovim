@@ -1,70 +1,33 @@
-vim.defer_fn(function()
-	require("nvim-treesitter.config").setup {
-		ensure_installed = { 'bash', 'vim', 'lua', 'html', 'css', 'javascript', 'python', 'go', 'rust', 'c', 'cpp' },
-		auto_install = false,
-		sync_install = false,
-		ignore_install = {},
-		modules = {},
-		highlight = { enable = true },
-		indent = { enable = true },
-		autotag = {
-			enable = true,
-			enable_rename = true,
-			enable_close = true,
-			enable_close_on_slash = true,
-			filetypes = { 'html', 'xml', 'js', 'jsx' },
-		},
-		incremental_selection = {
-			enable = true,
-			keymaps = {
-				init_selection = '<c-space>',
-				node_incremental = '<c-space>',
-				scope_incremental = '<c-s>',
-				node_decremental = '<M-space>',
-			},
-		},
-		textobjects = {
-			select = {
-				enable = true,
-				lookahead = true,
-				keymaps = {
-					['aa'] = '@parameter.outer',
-					['ia'] = '@parameter.inner',
-					['af'] = '@function.outer',
-					['if'] = '@function.inner',
-					['ac'] = '@class.outer',
-					['ic'] = '@class.inner',
-				},
-			},
-			move = {
-				enable = true,
-				set_jumps = true,
-				goto_next_start = {
-					[']m'] = '@function.outer',
-					[']]'] = '@class.outer',
-				},
-				goto_next_end = {
-					[']M'] = '@function.outer',
-					[']['] = '@class.outer',
-				},
-				goto_previous_start = {
-					['[m'] = '@function.outer',
-					['[['] = '@class.outer',
-				},
-				goto_previous_end = {
-					['[M'] = '@function.outer',
-					['[]'] = '@class.outer',
-				},
-				swap = {
-					enable = true,
-					swap_next = {
-						['<leader>a'] = '@parameter.inner',
-					},
-					swap_previous = {
-						['<leader>A'] = '@parameter.inner',
-					},
-				},
-			},
-		},
-	}
-end,0 )
+local ts = require("nvim-treesitter")
+
+ts.setup()
+
+ts.install({
+	"bash",
+	"vim",
+	"lua",
+	"html",
+	"css",
+	"javascript",
+	"python",
+	"go",
+	"rust",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {
+		"sh",
+		"vim",
+		"lua",
+		"html",
+		"css",
+		"javascript",
+		"python",
+		"go",
+		"rust",
+		"org",
+	},
+	callback = function (args)
+		pcall(vim.treesitter.start, args.buf)
+	end,
+})
